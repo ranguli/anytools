@@ -8,7 +8,7 @@ _Well you see, in terms of usage, we have no usage._
 
 ### logical_nand_dump.py
 
-Create a NAND dump using the stock firmware's CPS protocol, which is usable in CPS Update Mode. The CPS protocol, a logical view of NAND which avails of bad block detection and mirrored A/B banks, presumably for transactional write safety. This can cause the dump output to differ in edge cases from the 'raw' physical NAND contents. It's _not_ the preferable tool for determining all NAND addresses in the real world if you were to try to read and write them from custom firmware. The upside is this can be done over USB without SWD or running code on the device. The downside is that a few blocks can come back looking off or weird.
+Create a NAND dump using the stock firmware's CPS protocol, which is usable in CPS Update Mode. The CPS protocol has a logical view of NAND (which avails of bad block detection and mirrored A/B banks, presumably for transactional write safety). This can cause the dump output to differ in edge cases from the 'raw' physical NAND contents. It's _not_ the preferable tool for determining all NAND addresses in the real world if you were to try to read and write them from custom firmware. The upside is this can be done over USB without SWD or running code on the device. The downside is that a few blocks can come back looking off or weird, and during testing they're blocks that are actually really important (calibration data).
 
 ### raw_nand_dump
 
