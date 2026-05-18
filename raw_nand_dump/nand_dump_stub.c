@@ -1,5 +1,7 @@
 /*
- * nand_dump_stub.c — raw physical NAND dump via RAM-resident bit-bang SPI
+ * nand_dump_stub.c
+ *
+ * RAM-resident binary uploaded over SWD which reads & dumps raw NAND over bit-banged SPI
  *
  * Reuses startup.S and link.ld from this directory.  Load via OpenOCD:
  *   halt
@@ -36,7 +38,7 @@
 #define MB_RETRIES      MAILBOX[6]
 #define MB_FLAGS        MAILBOX[7]
 
-// RCU base 0x40021000
+/* GD32 RCU */
 
 #define RCU_BASE       0x40021000UL
 #define RCU_APB2EN     (*(volatile uint32_t *)(RCU_BASE + 0x18))
@@ -45,6 +47,8 @@
 #define RCU_PAEN       (1U <<  2)
 #define RCU_PBEN       (1U <<  3)
 #define RCU_PEEN       (1U <<  6)
+
+/* GD32 GPIO registers */
 
 #define GPIOA_BASE     0x40010800UL
 #define GPIOB_BASE     0x40010C00UL
@@ -73,10 +77,10 @@ static void pin_mode(uint32_t base, int pin, uint32_t mode) {
     *r = (*r & ~(0xFU << (p * 4))) | (mode << (p * 4));
 }
 
-#define NAND_CS_PIN   2   
-#define NAND_SCLK_PIN  14
-#define NAND_MOSI_PIN  15
-#define NAND_MISO_PIN  15
+#define NAND_CS_PIN   2    /* PE2 */
+#define NAND_SCLK_PIN  14   /* PB14 */
+#define NAND_MOSI_PIN  15   /* PB15 */
+#define NAND_MISO_PIN  15   /* PA15 */
 
 #define NAND_PAGE_SIZE   2048
 #define NAND_TOTAL_SIZE  0x08000000UL   /* 128 MiB */
@@ -395,7 +399,7 @@ static void nand_cache_read_finish(void) {
     nand_cs_high();
 }
 
-/* Page read 
+/* Page read
  *
  * Reads len bytes (<= page_size - col) from page number `page`
  * starting at column `col`.  Sequence:
